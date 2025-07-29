@@ -2,9 +2,9 @@
 Este repositorio contiene la solución al reto técnico para la posición de Desarrollador Java. El proyecto consiste en el diseño, desarrollo y despliegue de una API RESTful que simula un proceso de tokenización de tarjetas, gestión de clientes y un flujo de compras en línea, construido con Java y Spring Boot.
 # Requerimientos Funcionales
 ## Tokenización de Tarjetas de Crédito:
-- [ ] Crear componente que recibe datos de tarjeta y devuelve un token único.
-- [ ] API de tokenización autenticada por API Key o Secret Key.
-- [ ] Configurar probabilidad de rechazo para la creación de tokens.
+- [x] Crear componente que recibe datos de tarjeta y devuelve un token único.
+- [x] API de tokenización autenticada por API Key o Secret Key.
+- [x] Configurar probabilidad de rechazo para la creación de tokens.
 ## Ping API:
 - [x] Implementar endpoint /ping que retorne pong con código HTTP 200.
 ## Gestión de Clientes:
