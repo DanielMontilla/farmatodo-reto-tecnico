@@ -8,8 +8,8 @@ Este repositorio contiene la solución al reto técnico para la posición de Des
 ## Ping API:
 - [x] Implementar endpoint /ping que retorne pong con código HTTP 200.
 ## Gestión de Clientes:
-- [ ] Permitir el registro de clientes con datos básicos.
-- [ ] Validar que los datos del cliente sean correctos y únicos (email/teléfono).
+- [x] Permitir el registro de clientes con datos básicos.
+- [x] Validar que los datos del cliente sean correctos y únicos (email/teléfono).
 ## Búsqueda de Productos:
 - [ ] Implementar funcionalidad para buscar productos.
 - [ ] Almacenar las búsquedas de forma asíncrona.
