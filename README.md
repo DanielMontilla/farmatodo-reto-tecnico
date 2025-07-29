@@ -6,7 +6,7 @@ Este repositorio contiene la solución al reto técnico para la posición de Des
 - [ ] API de tokenización autenticada por API Key o Secret Key.
 - [ ] Configurar probabilidad de rechazo para la creación de tokens.
 ## Ping API:
-- [ ] Implementar endpoint /ping que retorne pong con código HTTP 200.
+- [x] Implementar endpoint /ping que retorne pong con código HTTP 200.
 ## Gestión de Clientes:
 - [ ] Permitir el registro de clientes con datos básicos.
 - [ ] Validar que los datos del cliente sean correctos y únicos (email/teléfono).
