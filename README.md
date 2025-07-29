@@ -11,9 +11,9 @@ Este repositorio contiene la solución al reto técnico para la posición de Des
 - [x] Permitir el registro de clientes con datos básicos.
 - [x] Validar que los datos del cliente sean correctos y únicos (email/teléfono).
 ## Búsqueda de Productos:
-- [ ] Implementar funcionalidad para buscar productos.
-- [ ] Almacenar las búsquedas de forma asíncrona.
-- [ ] Restringir visualización de productos según stock configurable.
+- [x] Implementar funcionalidad para buscar productos.
+- [x] Almacenar las búsquedas de forma asíncrona.
+- [x] Restringir visualización de productos según stock configurable.
 ## Carrito de Compras:
 - [ ] Implementar la funcionalidad para agregar productos al carrito.
 ## Gestión de Pedidos y Pagos:
