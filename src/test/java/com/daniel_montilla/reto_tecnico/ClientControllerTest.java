@@ -32,8 +32,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-// We explicitly import the security components needed for the test context.
-// This is the most reliable way to ensure the test environment is set up correctly.
 @WebMvcTest(ClientController.class)
 @Import({ SecurityConfig.class, ApiKeyAuthFilter.class })
 class ClientControllerTest {
@@ -384,8 +382,6 @@ class ClientControllerTest {
     updateRequest.setAddress("123 Main St Updated");
 
     when(clientRepository.findById(1L)).thenReturn(Optional.of(client1));
-    // Simulate database unique constraint violation when trying to save with
-    // duplicate phone
     when(clientRepository.save(any(Client.class)))
         .thenThrow(new DataIntegrityViolationException("Phone already exists"));
 
