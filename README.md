@@ -15,7 +15,7 @@ Este repositorio contiene la solución al reto técnico para la posición de Des
 - [x] Almacenar las búsquedas de forma asíncrona.
 - [x] Restringir visualización de productos según stock configurable.
 ## Carrito de Compras:
-- [ ] Implementar la funcionalidad para agregar productos al carrito.
+- [x] Implementar la funcionalidad para agregar productos al carrito.
 ## Gestión de Pedidos y Pagos:
 - [ ] Registrar pedidos con detalles del cliente, tarjeta y dirección.
 - [ ] Implementar lógica de aprobación/rechazo de pagos con probabilidad configurable.

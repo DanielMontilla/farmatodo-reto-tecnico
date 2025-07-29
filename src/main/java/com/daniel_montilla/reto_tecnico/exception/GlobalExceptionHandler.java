@@ -14,9 +14,15 @@ import org.springframework.dao.DataIntegrityViolationException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+  private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex,
@@ -44,6 +50,9 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(TokenizationRejectedException.class)
   public ResponseEntity<ErrorResponse> handleTokenizationRejected(TokenizationRejectedException ex,
       WebRequest request) {
+
+    logger.error("Validation error on request to {}: {}", request.getDescription(false), ex.getMessage());
+
     ErrorResponse errorResponse = new ErrorResponse(
         LocalDateTime.now(),
         HttpStatus.UNPROCESSABLE_ENTITY.value(),
@@ -55,6 +64,8 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(TokenGenerationException.class)
   public ResponseEntity<ErrorResponse> handleTokenGenerationException(TokenGenerationException ex, WebRequest request) {
+    logger.error("Tokenization rejected for request to {}: {}", request.getDescription(false), ex.getMessage());
+
     ErrorResponse errorResponse = new ErrorResponse(
         LocalDateTime.now(),
         HttpStatus.INTERNAL_SERVER_ERROR.value(),
@@ -67,6 +78,10 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(DataIntegrityViolationException.class)
   public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(DataIntegrityViolationException ex,
       WebRequest request) {
+
+    logger.error("Data integrity violation on request to {}: {}", request.getDescription(false),
+        ex.getMostSpecificCause().getMessage());
+
     ErrorResponse errorResponse = new ErrorResponse(
         LocalDateTime.now(),
         HttpStatus.BAD_REQUEST.value(),
@@ -79,11 +94,25 @@ public class GlobalExceptionHandler {
   // Fallback handler
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex, WebRequest request) {
+
+    String errorId = UUID.randomUUID().toString();
+    String path = request.getDescription(false).replace("uri=", "");
+
+    logger.error("Error ID: {} | Path: {} | Exception: {} - {}",
+        errorId,
+        path,
+        ex.getClass().getName(),
+        ex.getMessage());
+
+    logger.debug("Stack trace for Error ID: {}", errorId, ex);
+
+    String userMessage = String.format("An unexpected error occurred. Please report this ID to support: %s", errorId);
+
     ErrorResponse errorResponse = new ErrorResponse(
         LocalDateTime.now(),
         HttpStatus.INTERNAL_SERVER_ERROR.value(),
         "Internal Server Error",
-        "An unexpected error occurred. Please try again later.",
+        userMessage,
         request.getDescription(false).replace("uri=", ""));
     return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
   }

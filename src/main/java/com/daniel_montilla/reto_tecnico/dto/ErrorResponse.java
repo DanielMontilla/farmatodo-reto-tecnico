@@ -12,6 +12,7 @@ public class ErrorResponse {
   private String error;
   private String message;
   private String path;
+  private String errorId;
 
   private Object details;
 
