@@ -35,3 +35,5 @@ build/
 ### Obsidian ###
 # config dir
 .obsidian/
+
+.env

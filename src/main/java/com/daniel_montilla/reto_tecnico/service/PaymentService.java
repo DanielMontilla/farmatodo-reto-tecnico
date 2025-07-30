@@ -50,17 +50,20 @@ public class PaymentService {
         }
 
         logger.info("✅ Payment successful!");
-        emailSenderService.send(client.getEmail(), EmailSenderService.generatePaymentSuccessfullContent());
+        emailSenderService.send("Farmatodo_reto Payment successful", client.getEmail(),
+            EmailSenderService.generatePaymentSuccessfullContent(order));
         return;
       } catch (PaymentFailedException e) {
 
         if (attempt == retries) {
           logger.error("❌ Payment failed. Max retries reached.");
+          emailSenderService.send("Farmatodo_reto Payment failed", client.getEmail(),
+              EmailSenderService.generatePaymentFailedContent(order));
           throw new PaymentFailedException();
         }
 
         logger.warn("❌ Payment failed. Retrying...");
-        emailSenderService.send(client.getEmail(), EmailSenderService.generatePaymentFailedContent());
+
       }
     }
   }
