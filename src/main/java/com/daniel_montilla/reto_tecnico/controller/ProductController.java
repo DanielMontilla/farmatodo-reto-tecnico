@@ -40,42 +40,31 @@ public class ProductController {
 
   @PostMapping
   public ResponseEntity<Product> createProduct(@Valid @RequestBody ProductDTO.CreateRequest body) {
-    var product = new Product();
+    Product product = Product.builder()
+        .sku(body.getSku())
+        .name(body.getName())
+        .description(body.getDescription())
+        .price(body.getPrice())
+        .quantity(body.getQuantity())
+        .build();
 
-    product.setSku(body.getSku());
-    product.setName(body.getName());
-    product.setDescription(body.getDescription());
-    product.setPrice(body.getPrice());
-    product.setQuantity(body.getQuantity());
-
-    try {
-      Product savedProduct = productRepository.save(product);
-      return ResponseEntity.status(HttpStatus.CREATED).body(savedProduct);
-    } catch (Exception e) {
-      return ResponseEntity.badRequest().build();
-    }
+    Product savedProduct = productRepository.save(product);
+    return ResponseEntity.status(HttpStatus.CREATED).body(savedProduct);
   }
 
   @PostMapping("/batch")
-  public ResponseEntity<List<Product>> createProducts(@Valid @RequestBody List<ProductDTO.CreateRequest> requests) {
-    try {
-      List<Product> products = requests.stream()
-          .map(request -> {
-            var product = new Product();
-            product.setSku(request.getSku());
-            product.setName(request.getName());
-            product.setDescription(request.getDescription());
-            product.setPrice(request.getPrice());
-            product.setQuantity(request.getQuantity());
-            return product;
-          })
-          .toList();
+  public ResponseEntity<List<Product>> createProducts(@Valid @RequestBody List<ProductDTO.CreateRequest> body) {
+    List<Product> products = productRepository.saveAll(body.stream()
+        .map(request -> Product.builder()
+            .sku(request.getSku())
+            .name(request.getName())
+            .description(request.getDescription())
+            .price(request.getPrice())
+            .quantity(request.getQuantity())
+            .build())
+        .toList());
 
-      List<Product> savedProducts = productRepository.saveAll(products);
-      return ResponseEntity.status(HttpStatus.CREATED).body(savedProducts);
-    } catch (Exception e) {
-      return ResponseEntity.badRequest().build();
-    }
+    return ResponseEntity.status(HttpStatus.CREATED).body(products);
   }
 
   @PutMapping("/{id}")
@@ -118,16 +107,20 @@ public class ProductController {
   public ResponseEntity<List<Product>> searchProducts(
       @RequestParam(name = "q", required = false) String query,
       @RequestParam(defaultValue = "name") String sortBy,
-      @RequestParam(defaultValue = "asc") String sortOrder) {
+      @RequestParam(defaultValue = "asc") String sortOrder,
+      @RequestParam(defaultValue = "0") String minStock) {
 
+    int minStockInt;
     try {
-      List<Product> products = productService.searchProducts(query, sortBy, sortOrder);
-      System.out.println("Here! " + products);
-      return ResponseEntity.ok(products);
-
-    } catch (Exception e) {
-      System.out.println("Error! " + e);
+      minStockInt = Integer.parseInt(minStock);
+      if (minStockInt < 0) {
+        return ResponseEntity.badRequest().build();
+      }
+    } catch (NumberFormatException e) {
       return ResponseEntity.badRequest().build();
     }
+
+    List<Product> products = productService.searchProducts(query, sortBy, sortOrder, minStockInt);
+    return ResponseEntity.ok(products);
   }
 }

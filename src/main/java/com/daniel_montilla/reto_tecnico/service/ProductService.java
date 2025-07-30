@@ -3,7 +3,6 @@ package com.daniel_montilla.reto_tecnico.service;
 import com.daniel_montilla.reto_tecnico.entity.Product;
 import com.daniel_montilla.reto_tecnico.repository.ProductRepository;
 import jakarta.persistence.criteria.Predicate;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -16,15 +15,12 @@ public class ProductService {
   private final ProductRepository productRepository;
   private final ProductSearchService productSearchService;
 
-  @Value("${products.search.min-stock}")
-  private int configuredMinStock;
-
   public ProductService(ProductRepository productRepository, ProductSearchService productSearchService) {
     this.productRepository = productRepository;
     this.productSearchService = productSearchService;
   }
 
-  public List<Product> searchProducts(String searchTerm, String sortBy, String sortOrder) {
+  public List<Product> searchProducts(String searchTerm, String sortBy, String sortOrder, int minStock) {
     productSearchService.logSearch(searchTerm, sortBy, sortOrder);
 
     Specification<Product> spec = (root, _, criteriaBuilder) -> {
@@ -38,7 +34,9 @@ public class ProductService {
         predicates.add(criteriaBuilder.or(namePredicate, descriptionPredicate));
       }
 
-      predicates.add(criteriaBuilder.greaterThan(root.get("quantity"), configuredMinStock));
+      if (minStock > 0) {
+        predicates.add(criteriaBuilder.greaterThan(root.get("quantity"), minStock));
+      }
 
       return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
     };
