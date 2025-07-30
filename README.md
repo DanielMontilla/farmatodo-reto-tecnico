@@ -38,9 +38,9 @@ Este repositorio contiene la solución al reto técnico para la posición de Des
 ## Mantenibilidad:
 - [ ] Diseñar un código modular y documentado.
 ## DevSecOps:
-- [ ] Implementar flujos de trabajo para Integración Continua (CI).
-- [ ] Implementar flujos de trabajo para Pruebas Continuas.
-- [ ] Implementar flujos de trabajo para Despliegue Continuo (CD).
+- [x] Implementar flujos de trabajo para Integración Continua (CI).
+- [x] Implementar flujos de trabajo para Pruebas Continuas.
+- [x] Implementar flujos de trabajo para Despliegue Continuo (CD).
 ## Despliegue:
 - [ ] El sistema debe ser desplegable usando Docker y Docker Compose.
 - [ ] La API debe estar desplegada y accesible en línea en un proveedor de hosting.

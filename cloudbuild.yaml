@@ -1,0 +1,49 @@
+steps:
+# Step 1: Run application tests
+- name: 'maven:3.9.6-eclipse-temurin-24'
+  entrypoint: 'mvn'
+  args: ['clean', 'test', '-Djacoco.skip=true']
+
+# Step 2: Build the container image
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/$PROJECT_ID/reto-tecnico-app:$SHORT_SHA', '.']
+
+# Step 3: Push the image to Artifact Registry
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/$PROJECT_ID/reto-tecnico-app:$SHORT_SHA']
+
+# Step 4: Deploy to Cloud Run with all configurations
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: 'gcloud'
+  args:
+    - 'run'
+    - 'deploy'
+    - 'farmatodo-reto-tecnico' # Your Cloud Run service name
+    - '--image=gcr.io/$PROJECT_ID/reto-tecnico-app:$SHORT_SHA'
+    - '--region=us-south1'
+    - '--platform=managed'
+    - '--allow-unauthenticated'
+
+    # --- Health Check / Startup Probe Configuration ---
+    - '--startup-probe-http=/ping'
+    - '--startup-probe-initial-delay=30s'
+    - '--startup-probe-period=60s'
+    - '--startup-probe-timeout=1s'
+    - '--startup-probe-failure-threshold=3'
+
+    # --- Non-Sensitive Environment Variables ---
+    - '--set-env-vars=TOKENIZATION_REJECTION_PROBABILITY=0.1,PAYMENT_REJECTION_PROBABILITY=0.25,PAYMENT_PROCESS_MAX_RETRIES=3'
+
+    # --- Sensitive Environment Variables (from Secret Manager) ---
+    # You must create these secrets in the GCP console before running.
+    - '--set-secrets=HMAC_SECRET_KEY=hmac-secret:latest'
+    - '--set-secrets=AES_SECRET_KEY=aes-secret:latest'
+    - '--set-secrets=EMAIL_SENDER_ADDRESS=email-sender-address:latest'
+    - '--set-secrets=MAILTRAP_USERNAME=mailtrap-username:latest'
+    - '--set-secrets=MAILTRAP_PASSWORD=mailtrap-password:latest'
+    - '--set-secrets=EMAIL_APP_PASSWORD=email-app-password:latest'
+    - '--set-secrets=EMAIL_SENDER_ALIAS=email-sender-alias:latest'
+
+# Required by Cloud Build to list the built image.
+images:
+- 'gcr.io/$PROJECT_ID/reto-tecnico-app:$SHORT_SHA'
