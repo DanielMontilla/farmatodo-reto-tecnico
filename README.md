@@ -17,21 +17,21 @@ Este repositorio contiene la solución al reto técnico para la posición de Des
 ## Carrito de Compras:
 - [x] Implementar la funcionalidad para agregar productos al carrito.
 ## Gestión de Pedidos y Pagos:
-- [ ] Registrar pedidos con detalles del cliente, tarjeta y dirección.
-- [ ] Implementar lógica de aprobación/rechazo de pagos con probabilidad configurable.
-- [ ] Reintentar pago N veces si es rechazado.
+- [x] Registrar pedidos con detalles del cliente, tarjeta y dirección.
+- [x] Implementar lógica de aprobación/rechazo de pagos con probabilidad configurable.
+- [x] Reintentar pago N veces si es rechazado.
 ## Notificaciones por Correo:
-- [ ] Enviar correos al cliente en caso de éxito o fallo del pago.
+- [x] Enviar correos al cliente en caso de éxito o fallo del pago.
 ## Logs Centralizados:
 - [ ] Registrar todos los eventos con un UUID único por transacción en la base de datos.
 # Requerimientos No Funcionales y Criterios de Entrega
 ## Seguridad:
-- [ ] Implementar autenticación mediante API Key / Secret Key.
-- [ ] Encriptar datos sensibles (tarjetas de crédito) antes de almacenarlos.
+- [x] Implementar autenticación mediante API Key / Secret Key.
+- [x] Encriptar datos sensibles (tarjetas de crédito) antes de almacenarlos.
 
 ## Escalabilidad y Desempeño:
-- [ ] Diseñar la arquitectura para soportar concurrencia.
-- [ ] Centralizar parámetros clave en un archivo de configuración externo.
+- [x] Diseñar la arquitectura para soportar concurrencia.
+- [x] Centralizar parámetros clave en un archivo de configuración externo.
 ## Pruebas:
 - [ ] Proveer pruebas unitarias con al menos 80% de cobertura.
 - [ ] Proveer una colección de Postman/Insomnia/Bruno para pruebas.
