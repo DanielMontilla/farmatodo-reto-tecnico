@@ -182,4 +182,4 @@ No logre recuperar las conversaciones agenticas.
 # Test Coverage
 No llegamos al 80% de cobertura total, pero al menos en los controladores sí se cumplió. Ojo: en muchas pruebas usamos un cliente API que pasa por los Filters y otros módulos de seguridad (sí se prueban, pero no cuentan para la cobertura).
 
-![[test-coverage.png]]
+![640](https://raw.githubusercontent.com/DanielMontilla/farmatodo-reto-tecnico/refs/heads/master/assets/test-coverage.png)
