@@ -31,12 +31,12 @@ public class TokenizationService {
     }
   }
 
-  public String tokenizeCard(String creditCardNumeber, String expirationDate, String cvv, String creditCardHolderName) {
+  public String tokenizeCard(String creditCardNumber) throws TokenizationRejectedException {
 
     if (Math.random() < rejectionProbability) {
       throw new TokenizationRejectedException();
     }
 
-    return this.tokenize(creditCardNumeber + ":" + cvv + ":" + expirationDate + ":" + creditCardHolderName);
+    return this.tokenize(creditCardNumber);
   }
 }

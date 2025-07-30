@@ -22,8 +22,7 @@ public class TokenizationController {
   @PostMapping
   public ResponseEntity<String> createCreditCardToken(
       @Valid @RequestBody CreditCardDTO.CreditCardDetailsRequest request) {
-    String token = tokenizationService.tokenizeCard(request.getCardNumber(), request.getExpirationDate(),
-        request.getCvv(), request.getCardHolderName());
+    String token = tokenizationService.tokenizeCard(request.getCardNumber());
     return ResponseEntity.ok(token);
   }
 }
