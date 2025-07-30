@@ -1,5 +1,6 @@
 package com.daniel_montilla.reto_tecnico.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,7 +30,7 @@ public class CartService {
   }
 
   public List<CartItem> getItemsOfClient(Long clientId) {
-    return cartItemRepository.findAllWithProductByClientId(clientId);
+    return cartItemRepository.findAllWithProductByClientIdAndFulfilledFalse(clientId);
   }
 
   public CartItem addProductToCart(Long clientId, Long productId, int quantity) {
@@ -37,7 +38,7 @@ public class CartService {
     Client clientRef = clientRepository.getReferenceById(clientId);
     Product productRef = productRepository.getReferenceById(productId);
 
-    Optional<CartItem> existing = cartItemRepository.findByClientIdAndProductId(clientId, productId);
+    Optional<CartItem> existing = cartItemRepository.findByClientIdAndProductIdAndFulfilledFalse(clientId, productId);
 
     if (existing.isPresent()) {
       CartItem existingItem = existing.get();
@@ -61,7 +62,7 @@ public class CartService {
   }
 
   public Optional<CartItem> removeProductFromCart(Long clientId, Long productId, int quantity) {
-    Optional<CartItem> existing = cartItemRepository.findByClientIdAndProductId(clientId, productId);
+    Optional<CartItem> existing = cartItemRepository.findByClientIdAndProductIdAndFulfilledFalse(clientId, productId);
 
     if (existing.isEmpty()) {
       return Optional.empty();
@@ -83,5 +84,11 @@ public class CartService {
 
   public void clearCart(Long clientId) {
     cartItemRepository.deleteAllByClientId(clientId);
+  }
+
+  public BigDecimal getTotal(List<CartItem> cartItems) {
+    return cartItems.stream()
+        .map(item -> BigDecimal.valueOf(item.getQuantity()).multiply(BigDecimal.valueOf(item.getProduct().getPrice())))
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 }
