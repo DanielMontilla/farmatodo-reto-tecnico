@@ -36,19 +36,29 @@ public class ClientController {
 
   @PostMapping
   public ResponseEntity<Client> createClient(@Valid @RequestBody ClientsDTO.CreateRequest body) {
-    var client = new Client();
+    Client client = clientRepository.save(Client.builder()
+        .name(body.getName())
+        .email(body.getEmail())
+        .phone(body.getPhone())
+        .address(body.getAddress())
+        .build());
+    return ResponseEntity.status(HttpStatus.CREATED).body(client);
+  }
 
-    client.setName(body.getName());
-    client.setEmail(body.getEmail());
-    client.setPhone(body.getPhone());
-    client.setAddress(body.getAddress());
+  @PostMapping("/batch")
+  public ResponseEntity<List<Client>> createClients(@Valid @RequestBody List<ClientsDTO.CreateRequest> body) {
+    List<Client> clients = clientRepository.saveAll(
+        body
+            .stream()
+            .map(item -> Client.builder()
+                .name(item.getName())
+                .email(item.getEmail())
+                .phone(item.getPhone())
+                .address(item.getAddress())
+                .build())
+            .toList());
 
-    try {
-      Client savedClient = clientRepository.save(client);
-      return ResponseEntity.status(HttpStatus.CREATED).body(savedClient);
-    } catch (Exception e) {
-      return ResponseEntity.badRequest().build();
-    }
+    return ResponseEntity.status(HttpStatus.CREATED).body(clients);
   }
 
   @PutMapping("/{id}")
