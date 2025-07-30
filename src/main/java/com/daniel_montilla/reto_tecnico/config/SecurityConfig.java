@@ -28,6 +28,7 @@ public class SecurityConfig {
         .addFilterBefore(apiKeyAuthFilter, UsernamePasswordAuthenticationFilter.class)
 
         .authorizeHttpRequests(authz -> authz
+            .requestMatchers("/h2-console/**").permitAll()
             .requestMatchers("/ping", "/actuator/health").permitAll()
             .anyRequest().authenticated())
 
