@@ -211,7 +211,8 @@ class CartControllerTest {
         .content(objectMapper.writeValueAsString(removeRequest)))
         .andExpect(status().isOk());
 
-    var updatedItemOptional = cartItemRepository.findByClientIdAndProductId(client.getId(), product.getId());
+    var updatedItemOptional = cartItemRepository.findByClientIdAndProductIdAndFulfilledFalse(client.getId(),
+        product.getId());
     assertTrue(updatedItemOptional.isPresent(), "Cart item should still exist.");
     assertEquals(3, updatedItemOptional.get().getQuantity(),
         "Quantity should be decreased to 3.");
@@ -285,14 +286,14 @@ class CartControllerTest {
     cartItemRepository.save(CartItem.builder().client(client).product(product1).quantity(1).build());
     cartItemRepository.save(CartItem.builder().client(client).product(product2).quantity(2).build());
 
-    assertEquals(2, cartItemRepository.findAllByClientId(client.getId()).size(),
+    assertEquals(2, cartItemRepository.findAllByClientIdAndFulfilledFalse(client.getId()).size(),
         "Cart should have 2 items before clearing.");
 
     mockMvc.perform(delete("/cart/clear/" + client.getId())
         .header("Authorization", "Bearer " + MOCK_API_KEY))
         .andExpect(status().isNoContent());
 
-    List<CartItem> itemsAfterClear = cartItemRepository.findAllByClientId(client.getId());
+    List<CartItem> itemsAfterClear = cartItemRepository.findAllByClientIdAndFulfilledFalse(client.getId());
     assertTrue(itemsAfterClear.isEmpty(), "Cart should be empty after clearing.");
   }
 }
