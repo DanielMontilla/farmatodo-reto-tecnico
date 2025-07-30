@@ -1,5 +1,5 @@
 steps:
-# Step 1: Run application tests
+# Step 1: Run application tests (Currently commented out)
 # - name: 'eclipse-temurin:24-jdk'
 #   id: 'Run Tests'
 #   entrypoint: 'bash'
@@ -33,11 +33,8 @@ steps:
     - '--allow-unauthenticated'
 
     # --- Health Check / Startup Probe Configuration ---
-    - '--startup-probe-http=/ping'
-    - '--startup-probe-initial-delay=30s'
-    - '--startup-probe-period=60s'
-    - '--startup-probe-timeout=1s'
-    - '--startup-probe-failure-threshold=3'
+    # All probe settings are now combined into a single --startup-probe flag.
+    - '--startup-probe=type=http,path=/ping,initial-delay=30,period=60,timeout=1,failure-threshold=3'
 
     # --- Non-Sensitive Environment Variables ---
     - '--set-env-vars=TOKENIZATION_REJECTION_PROBABILITY=0.1,PAYMENT_REJECTION_PROBABILITY=0.25,PAYMENT_PROCESS_MAX_RETRIES=3'
