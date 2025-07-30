@@ -1,6 +1,6 @@
 package com.daniel_montilla.reto_tecnico.controller;
 
-import com.daniel_montilla.reto_tecnico.dto.CreditCardRequest;
+import com.daniel_montilla.reto_tecnico.dto.CreditCardDTO;
 import com.daniel_montilla.reto_tecnico.service.TokenizationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,8 +20,10 @@ public class TokenizationController {
   }
 
   @PostMapping
-  public ResponseEntity<String> createToken(@Valid @RequestBody CreditCardRequest request) {
-    String token = tokenizationService.tokenizeCard(request);
+  public ResponseEntity<String> createCreditCardToken(
+      @Valid @RequestBody CreditCardDTO.CreditCardDetailsRequest request) {
+    String token = tokenizationService.tokenizeCard(request.getCardNumber(), request.getExpirationDate(),
+        request.getCvv(), request.getCardHolderName());
     return ResponseEntity.ok(token);
   }
 }

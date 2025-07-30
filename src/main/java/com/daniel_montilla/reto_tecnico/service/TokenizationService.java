@@ -1,6 +1,5 @@
 package com.daniel_montilla.reto_tecnico.service;
 
-import com.daniel_montilla.reto_tecnico.dto.CreditCardRequest;
 import com.daniel_montilla.reto_tecnico.exception.TokenizationRejectedException;
 import com.daniel_montilla.reto_tecnico.exception.TokenGenerationException;
 
@@ -21,21 +20,23 @@ public class TokenizationService {
 
   private static final String HMAC_ALGORITHM = "HmacSHA256";
 
-  public String tokenizeCard(CreditCardRequest creditCardRequest) {
+  public String tokenize(String str) {
+    try {
+      Mac mac = Mac.getInstance(HMAC_ALGORITHM);
+      mac.init(new SecretKeySpec(hmacSecretKey.getBytes(), HMAC_ALGORITHM));
+      byte[] hmac = mac.doFinal(str.getBytes());
+      return Base64.getEncoder().encodeToString(hmac);
+    } catch (Exception e) {
+      throw new TokenGenerationException("Failed to generate HMAC token", e);
+    }
+  }
+
+  public String tokenizeCard(String creditCardNumeber, String expirationDate, String cvv, String creditCardHolderName) {
 
     if (Math.random() < rejectionProbability) {
       throw new TokenizationRejectedException();
     }
 
-    String canonicalString = creditCardRequest.toCanonicalString();
-
-    try {
-      Mac mac = Mac.getInstance(HMAC_ALGORITHM);
-      mac.init(new SecretKeySpec(hmacSecretKey.getBytes(), HMAC_ALGORITHM));
-      byte[] hmac = mac.doFinal(canonicalString.getBytes());
-      return Base64.getEncoder().encodeToString(hmac);
-    } catch (Exception e) {
-      throw new TokenGenerationException("Failed to generate HMAC token", e);
-    }
+    return this.tokenize(creditCardNumeber + ":" + cvv + ":" + expirationDate + ":" + creditCardHolderName);
   }
 }
