@@ -23,7 +23,7 @@ Este repositorio contiene la solución al reto técnico para la posición de Des
 ## Notificaciones por Correo:
 - [x] Enviar correos al cliente en caso de éxito o fallo del pago.
 ## Logs Centralizados:
-- [ ] Registrar todos los eventos con un UUID único por transacción en la base de datos.
+- [x] Registrar todos los eventos con un UUID único por transacción en la base de datos.
 # Requerimientos No Funcionales y Criterios de Entrega
 ## Seguridad:
 - [x] Implementar autenticación mediante API Key / Secret Key.
