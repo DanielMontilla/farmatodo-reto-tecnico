@@ -1,5 +1,6 @@
 steps:
-# Step 1: Run application tests (Currently commented out)
+# Step 1: Run application tests
+# It's a best practice to run tests before building the image.
 # - name: 'eclipse-temurin:24-jdk'
 #   id: 'Run Tests'
 #   entrypoint: 'bash'
@@ -19,7 +20,7 @@ steps:
   id: 'Push to Artifact Registry'
   args: ['push', 'gcr.io/$PROJECT_ID/reto-tecnico-app:$SHORT_SHA']
 
-# Step 4: Deploy to Cloud Run with all configurations
+# Step 4: Deploy to Cloud Run with security and best practices
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   id: 'Deploy to Cloud Run'
   entrypoint: 'gcloud'
@@ -30,23 +31,25 @@ steps:
     - '--image=gcr.io/$PROJECT_ID/reto-tecnico-app:$SHORT_SHA'
     - '--region=us-south1'
     - '--platform=managed'
-    - '--allow-unauthenticated'
+    # The '--allow-unauthenticated' flag has been removed for security.
+    # By default, the service will only be accessible by authenticated principals (users, service accounts)
+    # with the 'roles/run.invoker' IAM role.
 
-    # --- Health Check / Startup Probe Configuration ---
-    # All probe settings are now combined into a single --startup-probe flag.
-    - '--startup-probe=type=http,path=/ping,initial-delay=30,period=60,timeout=1,failure-threshold=3'
+    # --- Use a dedicated service account for the runtime ---
+    # This enhances security by following the principle of least privilege.
+    # Replace 'your-runtime-sa' with the name of your dedicated service account.
+    - '--service-account=your-runtime-sa@$PROJECT_ID.iam.gserviceaccount.com'
+
+    # --- Optimized Health Check / Startup Probe Configuration ---
+    # The period has been shortened for faster health detection.
+    - '--startup-probe=path=/ping,initial-delay=30,period=10,timeout=5,failure-threshold=3'
 
     # --- Non-Sensitive Environment Variables ---
     - '--set-env-vars=TOKENIZATION_REJECTION_PROBABILITY=0.1,PAYMENT_REJECTION_PROBABILITY=0.25,PAYMENT_PROCESS_MAX_RETRIES=3'
 
-    # --- Sensitive Environment Variables (from Secret Manager) ---
-    - '--set-secrets=HMAC_SECRET_KEY=hmac-secret:latest'
-    - '--set-secrets=AES_SECRET_KEY=aes-secret:latest'
-    - '--set-secrets=EMAIL_SENDER_ADDRESS=email-sender-address:latest'
-    - '--set-secrets=MAILTRAP_USERNAME=mailtrap-username:latest'
-    - '--set-secrets=MAILTRAP_PASSWORD=mailtrap-password:latest'
-    - '--set-secrets=EMAIL_APP_PASSWORD=email-app-password:latest'
-    - '--set-secrets=EMAIL_SENDER_ALIAS=email-sender-alias:latest'
+    # --- CORRECTED: Sensitive Environment Variables (from Secret Manager) ---
+    # All secrets are now in a single, comma-separated list.
+    - '--set-secrets=HMAC_SECRET_KEY=hmac-secret:latest,AES_SECRET_KEY=aes-secret:latest,EMAIL_SENDER_ADDRESS=email-sender-address:latest,MAILTRAP_USERNAME=mailtrap-username:latest,MAILTRAP_PASSWORD=mailtrap-password:latest,EMAIL_APP_PASSWORD=email-app-password:latest,EMAIL_SENDER_ALIAS=email-sender-alias:latest'
 
 # Required by Cloud Build to list the built image.
 images:
