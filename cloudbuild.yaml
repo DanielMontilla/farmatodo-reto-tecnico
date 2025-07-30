@@ -47,3 +47,6 @@ steps:
 # Required by Cloud Build to list the built image.
 images:
 - 'gcr.io/$PROJECT_ID/reto-tecnico-app:$SHORT_SHA'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
