@@ -95,6 +95,7 @@ public class CartDTO {
   @Builder
   @JsonInclude(JsonInclude.Include.NON_NULL)
   public static class CartResponse {
+    private double total;
     private List<Product> products;
 
     @Data

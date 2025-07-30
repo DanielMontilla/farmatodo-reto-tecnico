@@ -7,6 +7,8 @@ import com.daniel_montilla.reto_tecnico.entity.CartItem;
 import com.daniel_montilla.reto_tecnico.service.CartService;
 
 import java.util.Map;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +30,10 @@ public class CartController {
 
     var items = cartService.getItemsOfClient(clientId);
 
+    var total = cartService.getTotal(items);
+
     return ResponseEntity.ok(CartResponse.builder()
+        .total(total.doubleValue())
         .products(items.stream()
             .map(item -> CartResponse.Product.builder()
                 .id(item.getProduct().getId())
@@ -60,7 +65,7 @@ public class CartController {
         .build());
   }
 
-  @PostMapping("/add-many")
+  @PostMapping("/batch-add")
   public ResponseEntity<List<CartItemResponse>> addItemsToCart(@RequestBody CartDTO.CreateManyRequest body) {
     List<CartItemResponse> items = cartService.addProductsToCart(body.getClientId(),
         body.getProducts().stream().map(product -> Map.entry(product.getId(), product.getQuantity())).toList()).stream()
@@ -77,7 +82,7 @@ public class CartController {
                 .build())
         .toList();
 
-    return ResponseEntity.ok(items);
+    return ResponseEntity.status(HttpStatus.CREATED).body(items);
   }
 
   @PostMapping("/remove")

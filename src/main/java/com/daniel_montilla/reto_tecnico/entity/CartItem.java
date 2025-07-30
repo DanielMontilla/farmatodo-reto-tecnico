@@ -32,6 +32,10 @@ public class CartItem {
   @Column(nullable = false)
   private Integer quantity;
 
+  @Column(nullable = true)
+  @Builder.Default
+  private Boolean fulfilled = false;
+
   @CreationTimestamp
   @Column(nullable = false, updatable = false)
   private LocalDateTime createdAt;
