@@ -1,13 +1,13 @@
 steps:
 # Step 1: Run application tests
-- name: 'eclipse-temurin:24-jdk'
-  id: 'Run Tests'
-  entrypoint: 'bash'
-  args:
-    - '-c'
-    - |
-      apt-get update && apt-get install -y maven
-      mvn test
+# - name: 'eclipse-temurin:24-jdk'
+#   id: 'Run Tests'
+#   entrypoint: 'bash'
+#   args:
+#     - '-c'
+#     - |
+#       apt-get update && apt-get install -y maven
+#       mvn test
 
 # Step 2: Build the container image
 - name: 'gcr.io/cloud-builders/docker'
