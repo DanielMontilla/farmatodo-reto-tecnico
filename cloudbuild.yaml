@@ -7,7 +7,7 @@ steps:
     - '-c'
     - |
       apt-get update && apt-get install -y maven
-      mvn clean test -Djacoco.skip=true
+      mvn test
 
 # Step 2: Build the container image
 - name: 'gcr.io/cloud-builders/docker'
